@@ -1,5 +1,6 @@
 package es.nextdigital.musicapp.infrastructure.adapter.in;
 
+import es.nextdigital.musicapp.application.AddFavoriteSongService;
 import es.nextdigital.musicapp.application.FindUserByIdService;
 import es.nextdigital.musicapp.application.RegisterUserService;
 import es.nextdigital.musicapp.domain.User;
@@ -17,13 +18,16 @@ public class UserController {
 
     private final RegisterUserService registerUserService;
     private final FindUserByIdService findUserByIdService;
+    private final AddFavoriteSongService addFavoriteSongService;
 
     public UserController(
             RegisterUserService registerUserService,
-            FindUserByIdService findUserByIdService
+            FindUserByIdService findUserByIdService,
+            AddFavoriteSongService addFavoriteSongService
     ) {
         this.registerUserService = registerUserService;
         this.findUserByIdService = findUserByIdService;
+        this.addFavoriteSongService = addFavoriteSongService;
     }
 
     @PostMapping
@@ -39,4 +43,15 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/{userId}/favorites/{songId}")
+    public ResponseEntity<Void> addFavoriteSong(@PathVariable String userId, @PathVariable String songId) {
+        try {
+            addFavoriteSongService.addFavoriteSong(userId, songId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
+
